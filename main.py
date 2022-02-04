@@ -1,5 +1,5 @@
 from analizador import analizador
 
-lexico = analizador("20 9.2 + * / while int hola asldjaskdl23488")
+lexico = analizador("20.3 43 238.56 asdasd variable1")
 
 lexico.iniciarAnalizador()
