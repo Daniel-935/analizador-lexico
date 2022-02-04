@@ -39,6 +39,9 @@ class analizador:
             if i.isnumeric() and self.estado==0:
 
                 self.estado = 1
+            elif i.isnumeric() and self.estado==1:
+                
+                self.estado=1
 
             #Si tiene un punto y esta en el estado 1 pasa al segundo estado
             elif i == "." and self.estado==1:
