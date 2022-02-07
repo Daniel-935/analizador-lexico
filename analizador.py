@@ -31,6 +31,10 @@ class analizador:
 
             return "Identificador"
 
+        elif self.estado == 5:
+
+            return "+"
+
     def evaluaElemento(self, cadena):
 
         for i in cadena:
@@ -57,6 +61,11 @@ class analizador:
             elif i.isnumeric()==False and self.estado==0:
 
                     self.estado = 4
+
+            #Reconoce el simbolo +
+            elif i == "+" and self.estado==0:
+
+                    self.estado = 5
 
     def iniciarAnalizador(self):
    
