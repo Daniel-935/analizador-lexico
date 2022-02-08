@@ -1,3 +1,3 @@
-Tarea #1: Etapa del Analizador Lexico
+Tarea #2: Etapa del Analizador Sintactico
 
-Terminada la primer etapa que reconoce los simbolos lexicos del archivo pdf.
+El analizador sintactico solo puede realizar el ejercicio 1 del pdf
