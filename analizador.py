@@ -7,73 +7,71 @@ class analizador:
         #Separa la entrada por espacios en una lista
         self.splitEntrada = self.entrada.split(" ")
         #Declara el estado inicial en 0
-        self.estado = 0
 
-    def returnTipo(self):
+    def returnTipo(self,estado):
 
-        if self.estado == 0:
+        if estado == 0:
 
             return "Error"
 
-        elif self.estado == 1:
+        elif estado == 1:
 
             return "Entero"
 
-        elif self.estado == 2:
+        elif estado == 2:
 
             return "Error"
 
-        elif self.estado == 3:
+        elif estado == 3:
 
             return "Real"
 
-        elif self.estado == 4:
+        elif estado == 4:
 
             return "Identificador"
 
-        elif self.estado == 5:
+        elif estado == 5:
 
             return "+"
 
     def evaluaElemento(self, cadena):
 
+        estado = 0
+
         for i in cadena:
 
             #Se mantiene en estado 1 es ENTERO
-            if i.isnumeric() and self.estado==0:
+            if i.isnumeric() and estado==0:
 
-                self.estado = 1
-            elif i.isnumeric() and self.estado==1:
+                estado = 1
+            elif i.isnumeric() and estado==1:
                 
-                self.estado=1
+                estado=1
 
             #Si tiene un punto y esta en el estado 1 pasa al segundo estado
-            elif i == "." and self.estado==1:
+            elif i == "." and estado==1:
 
-                self.estado = 2
+                estado = 2
 
             #Si esta en el estado 2 y tiene numero es REAL
-            elif self.estado==2 and i.isnumeric:
+            elif estado==2 and i.isnumeric:
 
-                    self.estado = 3
-                
-            #Si empieza con letra y esta en el estado 0 es IDENTIFICADOR
-            elif i.isnumeric()==False and self.estado==0:
-
-                    self.estado = 4
+                estado = 3
 
             #Reconoce el simbolo +
-            elif i == "+" and self.estado==0:
+            elif i == "+" and estado==0:
 
-                    self.estado = 5
+                estado = 5
+                
+            #Si empieza con letra y esta en el estado 0 es IDENTIFICADOR
+            elif i.isnumeric()==False and estado==0:
+
+                estado = 4
+
+        return estado
 
     def iniciarAnalizador(self):
    
         for i in self.splitEntrada:
 
-            #Reinicia el automata
-            self.estado=0
-
-            self.evaluaElemento(i)
-
-            print(i + "\t" + self.returnTipo())    
+            print(i + "\t" + self.returnTipo(self.evaluaElemento(i)))    
