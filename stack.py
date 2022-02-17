@@ -28,6 +28,10 @@ class stack:
             return True
         return False
 
+    def limpiar(self):
+
+        self.stack = []
+
     def printStack(self):
 
         for i in self.stack:

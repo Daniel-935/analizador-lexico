@@ -95,6 +95,9 @@ class analizador:
         elif estado == 25:
 
             return "float"
+        elif estado == 26:
+
+            return "$"
 
     def evaluaElemento(self, cadena):
 
@@ -202,6 +205,9 @@ class analizador:
                 elif i == "=" and estado==0:
 
                     estado = 19
+                elif i == "$" and estado==0:
+
+                    estado = 26
                     
                 #Si empieza con letra y esta en el estado 0 es IDENTIFICADOR
                 elif i.isnumeric()==False and estado==0:
