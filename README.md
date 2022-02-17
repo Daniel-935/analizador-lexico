@@ -1,3 +1,4 @@
-Tarea #2: Etapa del Analizador Sintactico
+Tarea Actual: 2 - Etapa del Analizador Sintactico
 
-El analizador sintactico solo puede realizar el ejercicio 1 del pdf
+El analizador sintactico realiza los dos ejercicios
+
