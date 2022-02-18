@@ -1,6 +1,5 @@
 from analizador import analizador
 from stack import stack
-from elementoPila import elementoPila
 
 class sintactico:
 

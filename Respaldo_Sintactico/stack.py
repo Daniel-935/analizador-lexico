@@ -15,7 +15,7 @@ class stack:
 
     def pop(self):
 
-        return self.stack.pop()
+        self.stack.pop()
 
     def stackSize(self):
 
