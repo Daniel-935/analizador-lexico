@@ -1,9 +1,9 @@
 
 class elementoPila:
 
-    def __init__(self):
+    def __init__(self,v):
 
-        self.valor = ""
+        self.valor = v
 
     def printValor(self):
 
@@ -12,7 +12,6 @@ class elementoPila:
     def returnValor(self):
 
         return self.valor
-
 
 class terminal(elementoPila):
     pass
