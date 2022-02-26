@@ -98,6 +98,9 @@ class analizador:
         elif estado == 26:
 
             return "$"
+        elif estado == 27:
+
+            return "CADENA"
 
     def evaluaElemento(self, cadena):
 
@@ -208,6 +211,12 @@ class analizador:
                 elif i == "$" and estado==0:
 
                     estado = 26
+                elif (i == '"' or i == "'") and estado == 0:
+
+                    estado = 27
+                elif (i.isnumeric()==False or i == '"' or i == "'") and estado == 27:
+
+                    estado = 27
                     
                 #Si empieza con letra y esta en el estado 0 es IDENTIFICADOR
                 elif i.isnumeric()==False and estado==0:
