@@ -1,3 +1,4 @@
-Practica 3: Implementacion usando objetos
+EL REPOSITORIO SOLO TIENE EL NOMBRE DE ANALIZADOR LEXICO, PERO GUARDA TODAS LAS ETAPAS DE CADA PRACTICA POR SUBCARPETAS
 
-La pila ahora usa los objetos de 'elementoPila' y el analizador sintactico hace los dos ejercicios de la practica anterior usando los objetos de la pila.
+Etapa Actual: Practica #3
+Analizador Sintactico usando Objetos
