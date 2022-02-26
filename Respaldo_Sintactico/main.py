@@ -1,4 +1,4 @@
-from analizador import analizador
+from lexico import analizador
 from stack import stack
 from sintactico import sintactico
 
