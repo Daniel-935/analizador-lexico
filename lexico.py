@@ -1,4 +1,7 @@
 
+import re
+
+
 class analizador:
 
     def __init__(self, e):
@@ -16,7 +19,7 @@ class analizador:
 
         elif estado == 1:
 
-            return "Entero"
+            return "Entero", 1
 
         elif estado == 2:
 
@@ -24,83 +27,89 @@ class analizador:
 
         elif estado == 3:
 
-            return "Real"
+            return "Real", 2
 
         elif estado == 4:
 
-            return "Identificador"
+            return "Identificador", 0
 
         elif estado == 5:
 
-            return "+"
+            return "+", 5
 
         elif estado == 6:
 
-            return "-"
+            return "-", 5
 
         elif estado == 7:
 
-            return "*"
+            return "*", 6
         elif estado == 8:
 
-            return "/"
+            return "/", 6
         elif estado == 9:
 
-            return "OP. RELACIONAL"
+            return "OP. RELACIONAL", 7
         elif estado == 10:
 
-            return "||"
+            return "||", 8
         elif estado == 11:
 
-            return "&&"
+            return "&&", 9
         elif estado == 12:
 
-            return "!"
+            return "!", 10
         elif estado == 13:
 
-            return "OP. IGUALDAD"
+            return "OP. IGUALDAD", 11
         elif estado == 14:
 
-            return ";"
+            return ";", 12
         elif estado == 15:
 
-            return "("
+            return "(", 14
         elif estado == 16:
 
-            return ")"
+            return ")", 15
         elif estado == 17:
 
-            return "{"
+            return "{", 16
         elif estado == 18:
 
-            return "}"
+            return "}", 17
         elif estado == 19:
 
-            return "="
+            return "=", 18
         elif estado == 20:
 
-            return "if"
+            return "if", 19
         elif estado == 21:
 
-            return "while"
+            return "while", 20
         elif estado == 22:
 
-            return "return"
+            return "return", 21
         elif estado == 23:
 
-            return "else"
+            return "else", 22
         elif estado == 24:
 
-            return "int"
+            return "int", 4
         elif estado == 25:
 
-            return "float"
+            return "float", 4
         elif estado == 26:
 
-            return "$"
+            return "$", 23
         elif estado == 27:
 
-            return "CADENA"
+            return "CADENA", 3
+        elif estado == 28:
+
+            return ",", 13
+        elif estado == 29:
+
+            return "void", 4
 
     def evaluaElemento(self, cadena):
 
@@ -126,6 +135,9 @@ class analizador:
         elif cadena == "float" and estado==0:
 
             estado = 25
+        elif cadena == "void" and estado==0:
+
+            estado = 29
         elif cadena == "==" and estado==0:
 
             estado = 13
@@ -184,9 +196,9 @@ class analizador:
                 elif i == "!" and estado==0:
 
                     estado = 12
-                elif i == "=" and estado==12:
+                elif i == "=" and (estado==12 or estado==19):
 
-                    estado = 12
+                    estado = 13
                 elif i == ";" and estado==0:
 
                     estado = 14
@@ -211,6 +223,9 @@ class analizador:
                 elif i == "$" and estado==0:
 
                     estado = 26
+                elif i == "," and estado==0:
+
+                    estado = 28
                 elif (i == '"' or i == "'") and estado == 0:
 
                     estado = 27

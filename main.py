@@ -3,10 +3,9 @@ from lexico import analizador
 from stack import stack
 from sintactico import sintactico
 
-#analizador = sintactico()
-anLexico = analizador("'cadena'")
+analizador = sintactico()
 
-anLexico.iniciarAnalizador()
+
 
 """loc = ("Prueba.xlsx")
 
