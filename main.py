@@ -6,15 +6,13 @@ from sintactico import sintactico
 
 analizador = sintactico()
 
-file = open("file.txt","r")
+file = open("compilador.lr","r")
 fullString = file.readlines()
 
-for i in fullString:
+firstLine = fullString[1]
+firstLine = firstLine[:-1].split("\t")
 
-    print(i)
+print(firstLine)
 
-"""loc = ("Prueba.xlsx")
 
-wb = xlrd.open_workbook(loc)
-sheet = wb.sheet_by_index(0)"""
 
