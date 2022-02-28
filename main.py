@@ -6,13 +6,4 @@ from sintactico import sintactico
 
 analizador = sintactico()
 
-file = open("compilador.lr","r")
-fullString = file.readlines()
-
-firstLine = fullString[1]
-firstLine = firstLine[:-1].split("\t")
-
-print(firstLine)
-
-
-
+analizador.readFile()

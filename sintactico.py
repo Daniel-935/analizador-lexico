@@ -1,3 +1,4 @@
+from io import open
 from lexico import analizador
 from stack import stack
 import elementoPila
@@ -7,6 +8,10 @@ class sintactico:
     def __init__(self):
         
         self.pila = stack()
+        #Variables para guardar la gramatica del compilador
+        self.gramatica = []
+        self.popElements = []
+        self.matrizGramatica = []
 
     def ejercicio_1(self, entrada):
 
@@ -265,4 +270,32 @@ class sintactico:
                     print("Entrada No Valida")
                     break
                 
+    def readFile(self):
 
+        #Abre el archivo el modo lectura
+        file = open("compilador.lr","r")
+        #Guarda todos los datos en un string
+        fullString = file.readlines()
+
+        #Comienza a cargar los datos
+        for i in range(1,53):
+
+            #Guarda la linea
+            line = fullString[i]
+            line = line[:-1].split("\t")
+
+            #Guarda la regla gramatical
+            self.gramatica.append(line[0])
+            #Guarda los elementos que genera la regla
+            self.popElements.append(line[1])
+
+        for i in range(54,148):
+
+            #Guarda la linea actual
+            line = fullString[i]
+            #Genera una lista con los elementos
+            line = line[:-1].split("\t")
+
+            #Guarda la lista dentro de la matriz
+            self.matrizGramatica.append(line)
+            
