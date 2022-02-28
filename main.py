@@ -6,4 +6,5 @@ from sintactico import sintactico
 
 analizador = sintactico()
 
-analizador.readFile()
+analizador.compliador("int hola ;")
+#analizador.readFile()

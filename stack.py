@@ -1,3 +1,5 @@
+import elementoPila
+
 
 class stack:
 
@@ -36,4 +38,4 @@ class stack:
 
         for i in self.stack:
 
-            print(i)
+            print(i.printValor())

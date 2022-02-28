@@ -277,8 +277,13 @@ class sintactico:
         #Guarda todos los datos en un string
         fullString = file.readlines()
 
+        #CARGA LA PRIMERA LINEA QUE ES VACIA
+        self.gramatica.append("52")
+        self.popElements.append("0")
+
+
         #Comienza a cargar los datos
-        for i in range(1,53):
+        for i in range(1,54):
 
             #Guarda la linea
             line = fullString[i]
@@ -298,4 +303,88 @@ class sintactico:
 
             #Guarda la lista dentro de la matriz
             self.matrizGramatica.append(line)
+
+        file.close()
+
+
+    def compliador(self,e):
+
+        #Carga la gramatica del compilador
+        self.readFile()
+        
+        self.pila.limpiar()
+
+        lexico = analizador(e)
             
+        e = e + " $"
+        entradaDividida = e.split(" ")
+
+        #Se crea el primer elementoPila
+        primerNT = elementoPila.noTerminal("$")
+        #Segundo elementoPila
+        primerEstado = elementoPila.estado("0")
+        #Push a los elementos creados
+        self.pila.push(primerNT)
+        self.pila.push(primerEstado)
+
+        valida = False
+        cont = 0
+        valorTabla = ""
+
+        while valida == False:
+
+            #Devuelve el tipo de token y su valor en tabla
+            (tipo,valor) = lexico.returnTipo(lexico.evaluaElemento(entradaDividida[cont]))
+
+            #COMPARA TOPE DE LA PILA CON EL VALOR DEL TOKEN Y GUARDA EL VALOR DE LA TABLA
+            topePila = int(self.pila.top().returnValor())
+            valorTabla = int(self.matrizGramatica[topePila][valor])
+                
+            if valorTabla == 0:
+
+                print("Entrada no valida")
+                break
+
+            elif valorTabla > 0:
+
+                terminal = elementoPila.terminal(entradaDividida[cont])
+                estado = elementoPila.estado(str(valorTabla))
+
+                self.pila.push(terminal)
+                self.pila.push(estado)
+
+                print("Token: "+entradaDividida[cont]+" Accion: "+str(valorTabla))
+                cont+=1
+
+            elif valorTabla < 0:
+
+                if valorTabla == -1:
+
+                    print("Entrada Aceptada!")
+                    valida = True
+                    break
+                
+                valorTabla+=1
+                numeroEliminar = int(self.popElements[abs(valorTabla)])
+
+                if numeroEliminar > 0:
+
+                    for i in range(int(numeroEliminar)*2):
+
+                        self.pila.pop()
+                    
+                #Compara tope de la pila con la regla
+                topePila = int(self.pila.top().returnValor())
+                regla = int(self.gramatica[abs(valorTabla)])
+                valorTabla = self.matrizGramatica[topePila][regla]
+
+                noTerminal = elementoPila.noTerminal(str(regla))
+                estado = elementoPila.estado(str(valorTabla))
+
+                #Hace push en la pila
+                self.pila.push(noTerminal)
+                self.pila.push(estado)
+
+                print("Token: "+entradaDividida[cont]+" Accion: "+str(valorTabla))
+                
+              
