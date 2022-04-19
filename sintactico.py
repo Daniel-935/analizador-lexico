@@ -11,6 +11,7 @@ class sintactico:
         #Variables para guardar la gramatica del compilador
         self.gramatica = []
         self.popElements = []
+        self.nombreRegla = []
         self.matrizGramatica = []
 
     def ejercicio_1(self, entrada):
@@ -293,6 +294,8 @@ class sintactico:
             self.gramatica.append(line[0])
             #Guarda los elementos que genera la regla
             self.popElements.append(line[1])
+            #Guarda el nombre de la regla
+            self.nombreRegla.append(line[2])
 
         for i in range(54,148):
 

@@ -6,5 +6,4 @@ from sintactico import sintactico
 
 analizador = sintactico()
 
-analizador.compliador("int hola ;")
-#analizador.readFile()
+analizador.compliador("int suma ( ) { return a + b ; }")
