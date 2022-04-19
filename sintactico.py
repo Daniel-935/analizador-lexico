@@ -294,8 +294,10 @@ class sintactico:
             self.gramatica.append(line[0])
             #Guarda los elementos que genera la regla
             self.popElements.append(line[1])
-            #Guarda el nombre de la regla
-            self.nombreRegla.append(line[2])
+            if i != 53:
+
+                #Guarda el nombre de la regla
+                self.nombreRegla.append(line[2])
 
         for i in range(54,148):
 
