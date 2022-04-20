@@ -281,6 +281,7 @@ class sintactico:
         #CARGA LA PRIMERA LINEA QUE ES VACIA
         self.gramatica.append("52")
         self.popElements.append("0")
+        self.nombreRegla.append(" ")
 
 
         #Comienza a cargar los datos
@@ -290,14 +291,24 @@ class sintactico:
             line = fullString[i]
             line = line[:-1].split("\t")
 
-            #Guarda la regla gramatical
-            self.gramatica.append(line[0])
-            #Guarda los elementos que genera la regla
-            self.popElements.append(line[1])
             if i != 53:
 
+                #Guarda la regla gramatical
+                self.gramatica.append(line[0])
+                #Guarda los elementos que genera la regla
+                self.popElements.append(line[1])
                 #Guarda el nombre de la regla
                 self.nombreRegla.append(line[2])
+
+            elif i == 53:
+
+                #Guarda la regla gramatical
+                self.gramatica.append(line[0])
+                #Guarda los elementos que genera la regla
+                self.popElements.append(line[1])
+                #Al no tener un nombre de regla, se agrega un espacio vacio
+                self.nombreRegla.append(" ")
+
 
         for i in range(54,148):
 
@@ -325,9 +336,9 @@ class sintactico:
         entradaDividida = e.split(" ")
 
         #Se crea el primer elementoPila
-        primerNT = elementoPila.noTerminal("$")
+        primerNT = elementoPila.noTerminal("$","$",2)
         #Segundo elementoPila
-        primerEstado = elementoPila.estado("0")
+        primerEstado = elementoPila.estado("0","",3)
         #Push a los elementos creados
         self.pila.push(primerNT)
         self.pila.push(primerEstado)
@@ -352,8 +363,8 @@ class sintactico:
 
             elif valorTabla > 0:
 
-                terminal = elementoPila.terminal(entradaDividida[cont])
-                estado = elementoPila.estado(str(valorTabla))
+                terminal = elementoPila.terminal(entradaDividida[cont],"",1)
+                estado = elementoPila.estado(str(valorTabla),"",3)
 
                 self.pila.push(terminal)
                 self.pila.push(estado)
@@ -371,6 +382,8 @@ class sintactico:
                 
                 valorTabla+=1
                 numeroEliminar = int(self.popElements[abs(valorTabla)])
+                '''Obtiene el nombre de la regla'''
+                nomRegla = self.nombreRegla[abs(valorTabla)]
 
                 if numeroEliminar > 0:
 
@@ -383,8 +396,9 @@ class sintactico:
                 regla = int(self.gramatica[abs(valorTabla)])
                 valorTabla = self.matrizGramatica[topePila][regla]
 
-                noTerminal = elementoPila.noTerminal(str(regla))
-                estado = elementoPila.estado(str(valorTabla))
+                '''El noTerminal guarda el numero de la regla, el nombre y su ID'''
+                noTerminal = elementoPila.noTerminal(str(regla),nomRegla,2)
+                estado = elementoPila.estado(str(valorTabla),"",3)
 
                 #Hace push en la pila
                 self.pila.push(noTerminal)
