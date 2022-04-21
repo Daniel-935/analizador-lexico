@@ -1,3 +1,4 @@
+import arbolSintactico
 
 class elementoPila:
 
@@ -8,6 +9,7 @@ class elementoPila:
         '''ID PARA IDENTIFICAR EL ELEMENTO'''
         '''1 = terminal, 2 = noTerminal, 3 = Estado'''
         self.id = id
+        self.nodo = arbolSintactico.Nodo()
 
     def printValor(self):
 

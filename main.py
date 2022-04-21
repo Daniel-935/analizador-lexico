@@ -7,4 +7,4 @@ from sintactico import sintactico
 
 analizador = sintactico()
 
-analizador.compliador("int main ( ) { int a ; }")
+analizador.compliador("int main ( ) { return a + b ; }")

@@ -1,36 +1,59 @@
-from stack import stack
 
 class arbolSintactico:
 
-    def imprimirArbol(self, nodo):
+    def __init__(self):
 
-        '''Recibe la pila con los elementos que elimino'''
+        self.sangriaActual = 0
+    
+    def imprimirArbol(self, nodo):
+        
         for i in reversed(nodo.elementosEliminados):
 
-            '''Si en los elementos hay un noTerminal se imprime la regla'''
             if i.id == 2:
 
-                i.printRegla()
-                '''Despues se le pasa el nodo de ese noTerminal y entra en recursividad'''
-                self.imprimirArbol(i.nodo)
+                i.nodo.sangria = self.sangriaActual
+                i.nodo.printRegla()
+
+        lastIndex = self.ultimoNodo(nodo)
+        if type(lastIndex) == int:
+
+            nodoAux = nodo.elementosEliminados[lastIndex].nodo
+            self.sangriaActual = self.sangriaActual + len(nodoAux.regla)-2
+
+            self.imprimirArbol(nodoAux)
+
+    def ultimoNodo(self,nodo):
+
+        lastIndex = 0
+
+        if len(nodo.elementosEliminados) > 0:
+
+            for i in range(len(nodo.elementosEliminados)):
+
+                nodoAux = nodo.elementosEliminados[i]
+                if nodoAux.id == 2 and len(nodoAux.nodo.elementosEliminados) > 0:
+
+                    lastIndex = i
+
+            return lastIndex
+
+        return False        
 
 class Nodo:
 
     def __init__(self):
 
         self.sangria = 0
-        self.elementosEliminados = stack()
+        self.elementosEliminados = []
         self.regla = ""
 
-    def printSangria(self):
-
-        for i in range(self.sangria):
-
-            print(" ")
 
     def printRegla(self):
 
-        self.printSangria()
-        print(self.regla)
+        sangriaAux = ""
+        for i in range(self.sangria):
+
+            sangriaAux += " "
+        print(sangriaAux + self.regla + "\n")
 
     

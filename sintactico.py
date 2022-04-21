@@ -1,6 +1,7 @@
 from io import open
 from lexico import analizador
 from stack import stack
+import arbolSintactico
 import elementoPila
 
 class sintactico:
@@ -378,26 +379,42 @@ class sintactico:
 
                     print("Entrada Aceptada!")
                     valida = True
+                    '''COMIENZA A IMPRIMIR EL ARBOL'''
+                    arbolFinal = arbolSintactico.arbolSintactico()
+                    self.pila.pop()
+                    elemento = self.pila.pop()
+                    elemento.nodo.printRegla()
+                    arbolFinal.imprimirArbol(elemento.nodo)
                     break
                 
+                '''CREA EL NODO'''
+                nodo = arbolSintactico.Nodo()
+
                 valorTabla+=1
                 numeroEliminar = int(self.popElements[abs(valorTabla)])
                 '''Obtiene el nombre de la regla'''
                 nomRegla = self.nombreRegla[abs(valorTabla)]
+                '''EL NODO GUARDA EL NOMBRE DE LA REGLA Y LA SANGRIA'''
+                nodo.regla = nomRegla
 
                 if numeroEliminar > 0:
 
                     for i in range(int(numeroEliminar)*2):
 
-                        self.pila.pop()
+                        elemento = self.pila.pop()
+                        '''EL NODO SOLO GUARDA EL ELEMENTO IMPORTANTE'''
+                        if i%2 == 1:
+
+                            nodo.elementosEliminados.append(elemento)
                     
                 #Compara tope de la pila con la regla
                 topePila = int(self.pila.top().returnValor())
                 regla = int(self.gramatica[abs(valorTabla)])
                 valorTabla = self.matrizGramatica[topePila][regla]
 
-                '''El noTerminal guarda el numero de la regla, el nombre y su ID'''
+                '''El noTerminal guarda el numero de la regla, el nombre, su ID y el nodo'''
                 noTerminal = elementoPila.noTerminal(str(regla),nomRegla,2)
+                noTerminal.nodo = nodo
                 estado = elementoPila.estado(str(valorTabla),"",3)
 
                 #Hace push en la pila
