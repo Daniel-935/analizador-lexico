@@ -7,14 +7,18 @@ class arbolSintactico:
     
     def imprimirArbol(self, nodo):
         
+        '''Recorre los elementos que elimino el no terminal'''
         for i in reversed(nodo.elementosEliminados):
 
+            '''Si un elemento es un no terminal imprime la regla que elimino'''
             if i.id == 2:
 
                 i.nodo.sangria = self.sangriaActual
                 i.nodo.printRegla()
 
+        '''Obtiene el indice del no terminal que elimino mas elementos para continuar con el recorrido del arbol'''
         lastIndex = self.ultimoNodo(nodo)
+        '''Si no encuentra un no terminal con mas hijos eliminados el recorrido termina'''
         if type(lastIndex) == int:
 
             nodoAux = nodo.elementosEliminados[lastIndex].nodo

@@ -370,7 +370,7 @@ class sintactico:
                 self.pila.push(terminal)
                 self.pila.push(estado)
 
-                print("Token: "+entradaDividida[cont]+" Accion: "+str(valorTabla))
+                #print("Token: "+entradaDividida[cont]+" Accion: "+str(valorTabla))
                 cont+=1
 
             elif valorTabla < 0:
@@ -381,8 +381,10 @@ class sintactico:
                     valida = True
                     '''COMIENZA A IMPRIMIR EL ARBOL'''
                     arbolFinal = arbolSintactico.arbolSintactico()
+                    '''Hace pop al ultimo elemento que es un estado'''
                     self.pila.pop()
                     elemento = self.pila.pop()
+                    '''Imprime la regla del Nodo'''
                     elemento.nodo.printRegla()
                     arbolFinal.imprimirArbol(elemento.nodo)
                     break
@@ -421,6 +423,6 @@ class sintactico:
                 self.pila.push(noTerminal)
                 self.pila.push(estado)
 
-                print("Token: "+entradaDividida[cont]+" Accion: "+str(valorTabla))
+                #print("Token: "+entradaDividida[cont]+" Accion: "+str(valorTabla))
                 
               
