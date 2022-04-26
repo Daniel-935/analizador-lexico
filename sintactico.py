@@ -396,7 +396,7 @@ class sintactico:
                 numeroEliminar = int(self.popElements[abs(valorTabla)])
                 '''Obtiene el nombre de la regla'''
                 nomRegla = self.nombreRegla[abs(valorTabla)]
-                '''EL NODO GUARDA EL NOMBRE DE LA REGLA Y LA SANGRIA'''
+                '''EL NODO GUARDA EL NOMBRE DE LA REGLA'''
                 nodo.regla = nomRegla
 
                 if numeroEliminar > 0:
