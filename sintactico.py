@@ -1,6 +1,7 @@
 from io import open
 from lexico import analizador
 from stack import stack
+import arbolSintactico
 import elementoPila
 
 class sintactico:
@@ -11,6 +12,7 @@ class sintactico:
         #Variables para guardar la gramatica del compilador
         self.gramatica = []
         self.popElements = []
+        self.nombreRegla = []
         self.matrizGramatica = []
 
     def ejercicio_1(self, entrada):
@@ -280,6 +282,7 @@ class sintactico:
         #CARGA LA PRIMERA LINEA QUE ES VACIA
         self.gramatica.append("52")
         self.popElements.append("0")
+        self.nombreRegla.append(" ")
 
 
         #Comienza a cargar los datos
@@ -289,10 +292,24 @@ class sintactico:
             line = fullString[i]
             line = line[:-1].split("\t")
 
-            #Guarda la regla gramatical
-            self.gramatica.append(line[0])
-            #Guarda los elementos que genera la regla
-            self.popElements.append(line[1])
+            if i != 53:
+
+                #Guarda la regla gramatical
+                self.gramatica.append(line[0])
+                #Guarda los elementos que genera la regla
+                self.popElements.append(line[1])
+                #Guarda el nombre de la regla
+                self.nombreRegla.append(line[2])
+
+            elif i == 53:
+
+                #Guarda la regla gramatical
+                self.gramatica.append(line[0])
+                #Guarda los elementos que genera la regla
+                self.popElements.append(line[1])
+                #Al no tener un nombre de regla, se agrega un espacio vacio
+                self.nombreRegla.append(" ")
+
 
         for i in range(54,148):
 
@@ -320,9 +337,9 @@ class sintactico:
         entradaDividida = e.split(" ")
 
         #Se crea el primer elementoPila
-        primerNT = elementoPila.noTerminal("$")
+        primerNT = elementoPila.noTerminal("$","$",2)
         #Segundo elementoPila
-        primerEstado = elementoPila.estado("0")
+        primerEstado = elementoPila.estado("0","",3)
         #Push a los elementos creados
         self.pila.push(primerNT)
         self.pila.push(primerEstado)
@@ -347,13 +364,13 @@ class sintactico:
 
             elif valorTabla > 0:
 
-                terminal = elementoPila.terminal(entradaDividida[cont])
-                estado = elementoPila.estado(str(valorTabla))
+                terminal = elementoPila.terminal(entradaDividida[cont],"",1)
+                estado = elementoPila.estado(str(valorTabla),"",3)
 
                 self.pila.push(terminal)
                 self.pila.push(estado)
 
-                print("Token: "+entradaDividida[cont]+" Accion: "+str(valorTabla))
+                #print("Token: "+entradaDividida[cont]+" Accion: "+str(valorTabla))
                 cont+=1
 
             elif valorTabla < 0:
@@ -362,29 +379,50 @@ class sintactico:
 
                     print("Entrada Aceptada!")
                     valida = True
+                    '''COMIENZA A IMPRIMIR EL ARBOL'''
+                    arbolFinal = arbolSintactico.arbolSintactico()
+                    '''Hace pop al ultimo elemento que es un estado'''
+                    self.pila.pop()
+                    elemento = self.pila.pop()
+                    '''Imprime la regla del Nodo'''
+                    elemento.nodo.printRegla()
+                    arbolFinal.imprimirArbol(elemento.nodo)
                     break
                 
+                '''CREA EL NODO'''
+                nodo = arbolSintactico.Nodo()
+
                 valorTabla+=1
                 numeroEliminar = int(self.popElements[abs(valorTabla)])
+                '''Obtiene el nombre de la regla'''
+                nomRegla = self.nombreRegla[abs(valorTabla)]
+                '''EL NODO GUARDA EL NOMBRE DE LA REGLA'''
+                nodo.regla = nomRegla
 
                 if numeroEliminar > 0:
 
                     for i in range(int(numeroEliminar)*2):
 
-                        self.pila.pop()
+                        elemento = self.pila.pop()
+                        '''EL NODO SOLO GUARDA EL ELEMENTO IMPORTANTE'''
+                        if i%2 == 1:
+
+                            nodo.elementosEliminados.append(elemento)
                     
                 #Compara tope de la pila con la regla
                 topePila = int(self.pila.top().returnValor())
                 regla = int(self.gramatica[abs(valorTabla)])
                 valorTabla = self.matrizGramatica[topePila][regla]
 
-                noTerminal = elementoPila.noTerminal(str(regla))
-                estado = elementoPila.estado(str(valorTabla))
+                '''El noTerminal guarda el numero de la regla, el nombre, su ID y el nodo'''
+                noTerminal = elementoPila.noTerminal(str(regla),nomRegla,2)
+                noTerminal.nodo = nodo
+                estado = elementoPila.estado(str(valorTabla),"",3)
 
                 #Hace push en la pila
                 self.pila.push(noTerminal)
                 self.pila.push(estado)
 
-                print("Token: "+entradaDividida[cont]+" Accion: "+str(valorTabla))
+                #print("Token: "+entradaDividida[cont]+" Accion: "+str(valorTabla))
                 
               
