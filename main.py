@@ -7,4 +7,5 @@ from sintactico import sintactico
 
 analizador = sintactico()
 
-analizador.compliador("int main ( ) { int a ; }")
+analizador.compliador("int main ( int b , int a ) { return a + b ; }")
+#MASM

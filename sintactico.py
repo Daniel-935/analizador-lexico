@@ -3,6 +3,7 @@ from lexico import analizador
 from stack import stack
 import arbolSintactico
 import elementoPila
+import semantico
 
 class sintactico:
 
@@ -381,12 +382,16 @@ class sintactico:
                     valida = True
                     '''COMIENZA A IMPRIMIR EL ARBOL'''
                     arbolFinal = arbolSintactico.arbolSintactico()
+                    analizadorSem = semantico.Semantico()
                     '''Hace pop al ultimo elemento que es un estado'''
                     self.pila.pop()
                     elemento = self.pila.pop()
                     '''Imprime la regla del Nodo'''
-                    elemento.nodo.printRegla()
-                    arbolFinal.imprimirArbol(elemento.nodo)
+                    #elemento.nodo.printRegla()
+                    #arbolFinal.imprimirArbol(elemento.nodo)
+                    analizadorSem.analiza(elemento.nodo)
+                    analizadorSem.muestraSimbolos()
+                    analizadorSem.muestraErrores()
                     break
                 
                 '''CREA EL NODO'''

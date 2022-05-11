@@ -15,6 +15,9 @@ class arbolSintactico:
 
                 i.nodo.sangria = self.sangriaActual
                 i.nodo.printRegla()
+            else:
+
+                i.printValor()
 
         '''Obtiene el indice del no terminal que elimino mas elementos para continuar con el recorrido del arbol'''
         lastIndex = self.ultimoNodo(nodo)
