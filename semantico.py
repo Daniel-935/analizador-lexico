@@ -20,6 +20,7 @@ class Semantico:
         self.tablaSimbolos = []
         self.listaErrores = []
         self.ambito = "Global"
+        self.sangriaActual = 0
 
     def analiza(self, n):
 
@@ -32,10 +33,15 @@ class Semantico:
                 '''Toma el primer NT el cual es el que continua el recorrido del arbol'''
                 if i.id == 2 :
 
-                    if len(i.nodo.elementosEliminados) > 0:
+                    '''if len(i.nodo.elementosEliminados) > 0:
 
                         siguiente = contador
-                        siguiente = -abs(siguiente+1)
+                        siguiente = -abs(siguiente+1)'''
+
+                    i.nodo.sangria = self.sangriaActual
+                    i.nodo.printRegla()
+                    self.analiza(i.nodo)
+
                 if i.nodo.regla == "DefFunc" and i.id == 2 :
                     
                     '''CREA EL SIMBOLO FUNCION'''
@@ -119,7 +125,8 @@ class Semantico:
                 contador+=1
 
             '''Continua el recorrido del arbol'''
-            self.analiza(n.elementosEliminados[siguiente].nodo)
+            self.sangriaActual = self.sangriaActual + round(len(n.elementosEliminados[siguiente].nodo.regla)/2)
+            #self.analiza(n.elementosEliminados[siguiente].nodo)
 
     def buscaIdentificador(self,nombre,ambito,tipo):
 

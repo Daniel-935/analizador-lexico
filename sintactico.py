@@ -372,6 +372,7 @@ class sintactico:
                 self.pila.push(estado)
 
                 #print("Token: "+entradaDividida[cont]+" Accion: "+str(valorTabla))
+                #self.pila.printStack()
                 cont+=1
 
             elif valorTabla < 0:
@@ -387,7 +388,8 @@ class sintactico:
                     self.pila.pop()
                     elemento = self.pila.pop()
                     '''Imprime la regla del Nodo'''
-                    #elemento.nodo.printRegla()
+                    print(f"Entrada: {lexico.entrada}\n")
+                    elemento.nodo.printRegla()
                     #arbolFinal.imprimirArbol(elemento.nodo)
                     analizadorSem.analiza(elemento.nodo)
                     analizadorSem.muestraSimbolos()
@@ -420,7 +422,7 @@ class sintactico:
                 valorTabla = self.matrizGramatica[topePila][regla]
 
                 '''El noTerminal guarda el numero de la regla, el nombre, su ID y el nodo'''
-                noTerminal = elementoPila.noTerminal(str(regla),nomRegla,2)
+                noTerminal = elementoPila.noTerminal(nomRegla,nomRegla,2)
                 noTerminal.nodo = nodo
                 estado = elementoPila.estado(str(valorTabla),"",3)
 
@@ -429,5 +431,6 @@ class sintactico:
                 self.pila.push(estado)
 
                 #print("Token: "+entradaDividida[cont]+" Accion: "+str(valorTabla))
+                #self.pila.printStack()
                 
               
