@@ -1,4 +1,5 @@
 
 
-<h3> Etapa Actual: Practica #4 </h3>
-#La etapa actual del compilador es la Practica #4, donde utiliza la gramatica del compilador con el archivo lr que contiene las reglas gramaticales y la tabla
+<h3> Etapa Actual: Arbol Sintactico </h3>
+En la etapa actual se muestra el arbol sintactico de forma correcta, imprime todos los no terminales.
+Actualmente funciona el analizador semantico, solo es necesario comprobar que las variables o funciones existan si es que son utilizadas.
