@@ -3,6 +3,7 @@ from lexico import analizador
 from stack import stack
 import arbolSintactico
 import elementoPila
+import semantico
 
 class sintactico:
 
@@ -371,6 +372,7 @@ class sintactico:
                 self.pila.push(estado)
 
                 #print("Token: "+entradaDividida[cont]+" Accion: "+str(valorTabla))
+                #self.pila.printStack()
                 cont+=1
 
             elif valorTabla < 0:
@@ -381,12 +383,17 @@ class sintactico:
                     valida = True
                     '''COMIENZA A IMPRIMIR EL ARBOL'''
                     arbolFinal = arbolSintactico.arbolSintactico()
+                    analizadorSem = semantico.Semantico()
                     '''Hace pop al ultimo elemento que es un estado'''
                     self.pila.pop()
                     elemento = self.pila.pop()
                     '''Imprime la regla del Nodo'''
+                    print(f"Entrada: {lexico.entrada}\n")
                     elemento.nodo.printRegla()
-                    arbolFinal.imprimirArbol(elemento.nodo)
+                    #arbolFinal.imprimirArbol(elemento.nodo)
+                    analizadorSem.analiza(elemento.nodo)
+                    analizadorSem.muestraSimbolos()
+                    analizadorSem.muestraErrores()
                     break
                 
                 '''CREA EL NODO'''
@@ -411,11 +418,13 @@ class sintactico:
                     
                 #Compara tope de la pila con la regla
                 topePila = int(self.pila.top().returnValor())
+                reglaReal = str(abs(valorTabla))
                 regla = int(self.gramatica[abs(valorTabla)])
                 valorTabla = self.matrizGramatica[topePila][regla]
 
                 '''El noTerminal guarda el numero de la regla, el nombre, su ID y el nodo'''
-                noTerminal = elementoPila.noTerminal(str(regla),nomRegla,2)
+                noTerminal = elementoPila.noTerminal(reglaReal,nomRegla,2)
+                #noTerminal = elementoPila.noTerminal(nomRegla,nomRegla,2)
                 noTerminal.nodo = nodo
                 estado = elementoPila.estado(str(valorTabla),"",3)
 
@@ -424,5 +433,6 @@ class sintactico:
                 self.pila.push(estado)
 
                 #print("Token: "+entradaDividida[cont]+" Accion: "+str(valorTabla))
+                #self.pila.printStack()
                 
               

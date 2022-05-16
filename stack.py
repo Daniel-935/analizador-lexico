@@ -36,6 +36,10 @@ class stack:
 
     def printStack(self):
 
+        line = ""
+
         for i in self.stack:
 
-            print(i.printValor())
+            line += i.valor
+
+        print(line)
