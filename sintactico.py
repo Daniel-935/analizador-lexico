@@ -418,11 +418,13 @@ class sintactico:
                     
                 #Compara tope de la pila con la regla
                 topePila = int(self.pila.top().returnValor())
+                reglaReal = str(abs(valorTabla))
                 regla = int(self.gramatica[abs(valorTabla)])
                 valorTabla = self.matrizGramatica[topePila][regla]
 
                 '''El noTerminal guarda el numero de la regla, el nombre, su ID y el nodo'''
-                noTerminal = elementoPila.noTerminal(nomRegla,nomRegla,2)
+                noTerminal = elementoPila.noTerminal(reglaReal,nomRegla,2)
+                #noTerminal = elementoPila.noTerminal(nomRegla,nomRegla,2)
                 noTerminal.nodo = nodo
                 estado = elementoPila.estado(str(valorTabla),"",3)
 
