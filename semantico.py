@@ -37,6 +37,13 @@ class Semantico:
 
         file = open("traduccion.asm","a+")
 
+        '''Agrega las instrucciones principales al inicio del archivo ASM'''
+        file.write('.386\n')
+        file.write('.model flat, stdcall\n')
+        file.write('option casemap:none\n\n')
+        file.write('include c:\masm32\include\masm32rt.inc\n\n')
+        file.write('.code\n\n')
+
         file.close()
 
     def analiza(self, n):

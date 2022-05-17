@@ -391,6 +391,7 @@ class sintactico:
                     print(f"Entrada: {lexico.entrada}\n")
                     elemento.nodo.printRegla()
                     #arbolFinal.imprimirArbol(elemento.nodo)
+                    analizadorSem.createFile()
                     analizadorSem.analiza(elemento.nodo)
                     analizadorSem.muestraSimbolos()
                     analizadorSem.muestraErrores()
