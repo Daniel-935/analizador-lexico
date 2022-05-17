@@ -1,3 +1,4 @@
+from io import open
 
 class Simbolo:
 
@@ -31,6 +32,12 @@ class Semantico:
         self.listaErrores = []
         self.ambito = "Global"
         self.sangriaActual = 0
+
+    def createFile(self):
+
+        file = open("traduccion.asm","a+")
+
+        file.close()
 
     def analiza(self, n):
 
