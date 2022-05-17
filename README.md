@@ -5,6 +5,7 @@ A continuacion se muestran los tokens que debe reconocer el compilador:
 ![TablaTokens](Capturas/Tokens.PNG)
 
 Reconocimiento de tokens:
+
 ![Tokens](Capturas_Lexico/Captura_Output.PNG)
 
 <h3> Etapa #2: Analisis Sintactico </h3>
@@ -14,9 +15,11 @@ Este proceso se hace gracias a una gramatica, esta se define a partir de cierto 
 Al ser un ejemplo tan extenso solo se muestra la siguiente captura la cual muestra como es que funciona la pila y acepta una cadena
 
 Entrada:
+
 ![EntradaSemantico](Capturas/Entrada_Semantico_Sintactico.PNG)
 
 Pila:
+
 ![EjemploPila](Capturas/Ejemplo_Pila.PNG)
 
 <h3> Etapa #3: Arbol Sintactico </h3>
