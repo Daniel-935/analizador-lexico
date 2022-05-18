@@ -392,7 +392,10 @@ class sintactico:
                     elemento.nodo.printRegla()
                     #arbolFinal.imprimirArbol(elemento.nodo)
                     analizadorSem.createFile()
-                    analizadorSem.analiza(elemento.nodo)
+                    '''ABRE EL ARCHIVO PARA REALIZAR EL ANALISIS'''
+                    file = open('traduccion.asm','a+')
+                    analizadorSem.analiza(elemento.nodo,file)
+                    file.close()
                     analizadorSem.muestraSimbolos()
                     analizadorSem.muestraErrores()
                     break
