@@ -33,7 +33,7 @@ Al final se muestra el recorrido completo del arbol:
 ![CapturaArbol](Capturas/Arbol_2.PNG)
 ![CapturaArbol](Capturas/Arbol_3.PNG)
 
-<h3> Etapa Actual: Analizador Semantico </h3>
+<h3> Etapa #4: Analizador Semantico </h3>
 En la etapa actual se muestra el arbol sintactico a la hora de ejecutar el programa.
 Al finalizar muestra tanto la tabla de simbolos y la tabla de errores.
 
@@ -43,3 +43,54 @@ El ejemplo en la etapa actual es con la siguiente entrada:
 El resultado de la tabla de simbolos es la siguiente:
 
 ![TablaDeSimbolos](Capturas/Tabla_Simbolos.PNG)
+
+<h3> Etapa Final: Generacion de Codigo </h3>
+
+Esta etapa consiste en crear un archivo ASM (Assembly Languaje) el cual seria la representacion de la entrada en lenguaje ensamblador, con este archivo se genera un ejecutable el cual muestra la salida del programa.
+
+La entrada que se utiliza para esta etapa final es la siguiente:
+
+![EntradaCodigo](Capturas/Entrada_GeneracionCodigo.PNG)
+
+Se realiza el recorrido del arbol sintactico para la creacion del archivo ASM el cual da como resultado el siguiente resultado:
+```
+.386
+.model flat, stdcall
+option casemap:none
+
+include c:\masm32\include\masm32rt.inc
+
+.code
+
+suma proc a:DWORD,b:DWORD
+mov eax, a
+add eax, b
+ret
+suma endp
+
+main proc
+local resultado:DWORD
+mov eax, 8
+push eax
+mov eax, 5
+push eax
+call suma
+mov resultado, eax
+mov eax, resultado
+print str$(eax)
+invoke ExitProcess, 0
+
+main endp
+end main
+```
+Este archivo es la traduccion en codigo ensamblador.
+Al no existir una funcion "print" en el lenguaje, cada que se realiza una asignacion se imprime en pantalla en el archivo asm la el valor de la variable a la que se le realizo la asgnacion.
+Al terminar de realizar todo el analisis semantico el programa crea un archivo .bat el cual se encarga de ejecutar las instrucciones necesarias para crear el archivo ejecutable, el archivo utiliza las instrucciones del programa MASM32 para generar tanto el archivo .obj y .exe.
+
+![CreacionEjecutable](Capturas/Creacion_Ejecutable.PNG)
+
+![Archivos](Capturas/Archivos_Creados.PNG)
+
+Al ejecutar el archivo .exe simplemente muestra la salida la cual seria la siguiente:
+
+![SalidaASM](Capturas/Salida_ASM.PNG)
