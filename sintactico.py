@@ -1,4 +1,6 @@
 from io import open
+import os
+import subprocess
 from lexico import analizador
 from stack import stack
 import arbolSintactico
@@ -391,9 +393,24 @@ class sintactico:
                     print(f"Entrada: {lexico.entrada}\n")
                     elemento.nodo.printRegla()
                     #arbolFinal.imprimirArbol(elemento.nodo)
-                    analizadorSem.analiza(elemento.nodo)
+                    analizadorSem.createFile()
+                    '''ABRE EL ARCHIVO PARA REALIZAR EL ANALISIS'''
+                    file = open('traduccion.asm','a+')
+                    analizadorSem.analiza(elemento.nodo,file)
+                    file.close()
                     analizadorSem.muestraSimbolos()
                     analizadorSem.muestraErrores()
+                    '''Crea un archivo .bat el cual creara el ejecutable del programa'''
+                    batchFile = open('createEXE.bat','a+')
+                    firstCommand = 'c:\masm32' +'\\'+'bin\ml /c /Zd /coff traduccion.asm\n'
+                    secondCommand = 'c:\masm32'+'\\'+ 'bin\link /subsystem:console traduccion.obj'
+                    batchFile.write(firstCommand)
+                    batchFile.write(secondCommand)
+                    batchFile.write('\ncmd /c del "%~f0"&exit')
+                    batchFile.close()
+                    '''Ejecuta el archivo bat para despues eliminarlo y abrir el ejecutable'''
+                    subprocess.Popen('createEXE.bat',shell=True)
+                    
                     break
                 
                 '''CREA EL NODO'''

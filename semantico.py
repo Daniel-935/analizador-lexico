@@ -32,15 +32,28 @@ class Semantico:
         self.listaErrores = []
         self.ambito = "Global"
         self.sangriaActual = 0
+        '''Para saber si se agrega un return al final de una funcion en el archivo'''
+        self.regresa = False
+        self.asignacion = False
+        self.variableAsignacion = ""
 
     def createFile(self):
 
         file = open("traduccion.asm","a+")
 
+        '''Agrega las instrucciones principales al inicio del archivo ASM'''
+        file.write('.386\n')
+        file.write('.model flat, stdcall\n')
+        file.write('option casemap:none\n\n')
+        file.write('include c:\masm32\include\masm32rt.inc\n\n')
+        file.write('.code\n\n')
+
         file.close()
 
-    def analiza(self, n):
+    '''ABRE EL ARCHIVO'''
 
+    def analiza(self, n, archivo):
+        
         contador = 0
         siguiente = -1
         if len(n.elementosEliminados) > 0:
@@ -53,7 +66,6 @@ class Semantico:
                     funcion = Funcion()
                     funcion.tipo = "Funcion"
                     funcion.tipoDato = i.nodo.elementosEliminados[-1].valor
-                    funcion.identificador = i.nodo.elementosEliminados[-2].valor
                     funcion.ambito = "Global"
 
                     '''Comprueba si la funcion existe'''
@@ -64,10 +76,31 @@ class Semantico:
 
                         '''Agrega el simbolo a la tabla de simbolos'''
                         self.tablaSimbolos.append(funcion)
+                        funcion.identificador = i.nodo.elementosEliminados[-2].valor
+                        '''AGREGA LA FUNCION AL ARCHIVO ASM, NO AGREGA SALTO DE LINEA POR SI EXISTEN PARAMETROS'''
+                        stringAux = f'{funcion.identificador} proc'
+                        archivo.write(stringAux)
                     else:
 
                         error = f"ERROR: funcion '{funcion.identificador}' redefinida"
                         self.listaErrores.append(error)
+
+                '''DETERMINA SI ES EL FIN DE LA FUNCION PARA ESCRIBIRLO EN EL ARCHIVO'''
+                if i.id == 1 and i.valor == "}":
+
+                    '''En caso de ser la funcion principal, al final se agrega el end main para finalizar el codigo'''
+                    if self.ambito == "main":
+
+                        if self.regresa == True:
+                            archivo.write("ret\n")
+                            self.regresa = False
+                        archivo.write("invoke ExitProcess, 0\n\nmain endp\nend main")
+                    else:
+
+                        if self.regresa == True:
+                            archivo.write("ret\n")
+                            self.regresa = False
+                        archivo.write(f"{self.ambito} endp\n\n")
                 
                 if i.id == 2 and i.nodo.regla == "Parametros" and len(i.nodo.elementosEliminados) > 0:
 
@@ -86,6 +119,9 @@ class Semantico:
 
                         self.tablaSimbolos.append(parametro)
                         self.aumentaNumParametros(self.ambito,"Global")
+                        '''AGREGA EL PARAMETRO AL ARCHIVO ASM'''
+                        stringAux = f' {parametro.identificador}:DWORD'
+                        archivo.write(stringAux)
 
                         listaParam = nodoAux.elementosEliminados[0].nodo
 
@@ -93,12 +129,18 @@ class Semantico:
                         if listaParam.regla == "ListaParam" and len(listaParam.elementosEliminados)>0:
 
                             '''LA FUNCION ES RECURSIVA EN EL CASO DE QUE EXISTAN MULTIPLES DELCARACIONES'''
-                            self.agregaListaParam(listaParam)
+                            self.agregaListaParam(listaParam,archivo)
+                            archivo.write('\n')
                     
                     else:
 
                         error = f"ERROR: parametro '{parametro.identificador}' definido dos veces"
                         self.listaErrores.append(error)
+
+                if i.id == 2 and i.nodo.regla == "Parametros" and len(i.nodo.elementosEliminados) == 0:
+
+                    '''Esta verificacion es para acomodar el archivo asm, si no hay parametros agrega un salto de linea'''
+                    archivo.write('\n')
 
                 if i.id == 2 and i.nodo.regla == "DefVar":
 
@@ -114,6 +156,9 @@ class Semantico:
                     if self.buscaIdentificador(variable.identificador,variable.ambito,variable.tipoDato) == False:
 
                         self.tablaSimbolos.append(variable)
+                        '''AGREGA LA VARIABLE AL ARCHIVO ASM'''
+                        stringAux = f'local {variable.identificador}:DWORD\n'
+                        archivo.write(stringAux)
 
                         listVar = nodoAux.elementosEliminados[1].nodo
 
@@ -121,7 +166,8 @@ class Semantico:
                         if listVar.regla == "ListaVar" and len(listVar.elementosEliminados) > 0:
 
                             '''LA FUNCION ES RECURSIVA EN EL CASO DE QUE EXISTAN MULTIPLES DELCARACIONES'''
-                            self.agregaListaVar(nodoAux.elementosEliminados[-1].valor,listVar)
+                            self.agregaListaVar(nodoAux.elementosEliminados[-1].valor,listVar,archivo)
+
 
                     else:
 
@@ -148,6 +194,15 @@ class Semantico:
                         error = f"ERROR: variable '{terminalAux.valor}' no definida"
                         self.listaErrores.append(error)
 
+                    else:
+ 
+                        '''En el caso de que todo este bien, agrega la asignacion al archivo e imprime el valor'''
+                        '''Debido a que no existe una funcion print en el lenguaje, cada que se realice una asignacion se realiza un print en lenguaje ensamblador para comprobar el funcionamiento del programa'''
+                        '''Se marca como que hubo una asignacion y cuando se llegue a la expresion despues de la sentencia, se escribe en el archivo'''
+                        self.asignacion = True
+                        self.variableAsignacion = terminalAux.valor
+                        
+
                 if i.id == 2 and i.nodo.regla == "LlamadaFunc" and i.valor == "40":
 
                     '''Comprueba si la funcion que se llama existe'''
@@ -157,6 +212,21 @@ class Semantico:
 
                         error = f"ERROR: variable '{terminalAux.valor}' no definida"
                         self.listaErrores.append(error)
+                    else:
+
+                        '''Toma los argumentos si es que existen y los escribe en el archivo'''
+                        arg = i.nodo.elementosEliminados[1]
+                        if len(arg.nodo.elementosEliminados)>0:
+
+                            termino = arg.nodo.elementosEliminados[-1].nodo.elementosEliminados[0].nodo.elementosEliminados[0].valor
+                            '''Mueve el valor al registro y le hace push a la pila del ensamblador'''
+                            archivo.write(f"mov eax, {termino}\n")
+                            archivo.write("push eax\n")
+
+                            '''Comprueba si hay mas de un argumento'''
+                            if len(arg.nodo.elementosEliminados[0].nodo.elementosEliminados)>0:
+
+                                self.agregaArgumentos(arg.nodo.elementosEliminados[0],archivo)
                     
                     '''Consigue la funcion y comprueba si tienen el mismo numero de parametros'''
                     funcionAux = self.regresaFuncion(terminalAux.valor,"Global")
@@ -167,17 +237,75 @@ class Semantico:
                         error = f"ERROR: numero de argumentos no coincide"
                         self.listaErrores.append(error)
 
+                    '''Al final agrega la llamada de la funcion al archivo ASM'''
+                    archivo.write(f"call {terminalAux.valor}\n")
+
+                    '''Comprueba si hubo una asignacion previa, para realizar un print'''
+                    if self.asignacion == True:
+
+                        archivo.write(f"mov {self.variableAsignacion}, eax\n")
+                        archivo.write(f"mov eax, {self.variableAsignacion}\n")
+                        archivo.write("print str$(eax)\n")
+                        self.asignacion = False
+                        self.variableAsignacion = ""
+
+                '''Si hay un return al final de la funcion se marca para agregarlo al final de la funcion'''
+                if i.id == 2 and i.nodo.regla == "ValorRegresa":
+
+                    self.regresa = True
+
+                '''COMPRUEBA SI HAY ALGUNA OPERACION PARA ESCRIBIRLA EN EL ARCHIVO'''
+                if i.id == 2 and i.nodo.regla == "Expresion":
+
+                    '''Suma'''
+                    if i.valor == "47" and i.nodo.elementosEliminados[1].valor == "+":
+
+                        '''Obtiene el primer y segundo termino para la suma'''
+                        termino_1 = i.nodo.elementosEliminados[-1].nodo.elementosEliminados[-1].nodo.elementosEliminados[0].valor
+                        termino_2 = i.nodo.elementosEliminados[0].nodo.elementosEliminados[-1].nodo.elementosEliminados[0].valor
+
+                        archivo.write(f"mov eax, {termino_1}\n")
+                        archivo.write(f"add eax, {termino_2}\n")
+
+                        '''Comprueba si hubo asignacion para imprimir el valor'''
+                        if self.asignacion == True:
+
+                            archivo.write(f"mov {self.variableAsignacion}, eax\n")
+                            archivo.write(f"mov eax, {self.variableAsignacion}\n")
+                            archivo.write("print str$(eax)\n")
+                            self.asignacion = False
+                            self.variableAsignacion = ""
+
+                    '''Resta'''
+                    if i.valor == "47" and i.nodo.elementosEliminados[1].valor == "-":
+
+                        termino_1 = i.nodo.elementosEliminados[-1].nodo.elementosEliminados[-1].nodo.elementosEliminados[0].valor
+                        termino_2 = i.nodo.elementosEliminados[0].nodo.elementosEliminados[-1].nodo.elementosEliminados[0].valor
+
+                        archivo.write(f"mov eax, {termino_1}\n")
+                        archivo.write(f"sub eax, {termino_2}\n")
+                        '''Comprueba si hubo asignacion para imprimir el valor'''
+                        if self.asignacion == True:
+
+                            archivo.write(f"mov {self.variableAsignacion}, eax\n")
+                            archivo.write(f"mov eax, {self.variableAsignacion}\n")
+                            archivo.write("print str$(eax)\n")
+                            self.asignacion = False
+                            self.variableAsignacion = ""
+
                 if i.id == 2 :
 
                     i.nodo.sangria = self.sangriaActual
                     i.nodo.printRegla()
-                    self.analiza(i.nodo)
+                    self.analiza(i.nodo,archivo)
 
                 contador+=1
 
             '''Continua el recorrido del arbol'''
             self.sangriaActual = self.sangriaActual + round(len(n.elementosEliminados[siguiente].nodo.regla)/2)
             #self.analiza(n.elementosEliminados[siguiente].nodo)
+
+        
 
     def buscaIdentificador(self,nombre,ambito,tipo):
 
@@ -239,7 +367,7 @@ class Semantico:
 
         return False
 
-    def agregaListaVar(self,tipo,nodo):
+    def agregaListaVar(self,tipo,nodo,archivo):
 
         segVariable = Simbolo()
         segVariable.tipo = "Variable"
@@ -251,6 +379,8 @@ class Semantico:
         if self.buscaIdentificador(segVariable.identificador,segVariable.ambito,segVariable.tipoDato) == False:
 
             self.tablaSimbolos.append(segVariable)
+            '''AGREGA LAS VARIABLES AL ARCHIVO'''
+            archivo.write(f'local {segVariable.identificador}:DWORD\n')
 
             listaVar = nodo.elementosEliminados[0].nodo
             if listaVar.regla == "ListaVar" and len(listaVar.elementosEliminados) > 0:
@@ -262,7 +392,7 @@ class Semantico:
             error = f"ERROR: variable '{segVariable.identificador}' redefinida"
             self.listaErrores.append(error)
 
-    def agregaListaParam(self,nodo):
+    def agregaListaParam(self,nodo,archivo):
 
         segParametro  = Simbolo()
         segParametro.tipo = "Parametro"
@@ -275,6 +405,9 @@ class Semantico:
 
             self.tablaSimbolos.append(segParametro)
             self.aumentaNumParametros(self.ambito,"Global")
+            '''AGREGA EL SIGUIENTE PARAMETRO AL ARCHIVO ASM'''
+            stringAux = f',{segParametro.identificador}:DWORD'
+            archivo.write(stringAux)
 
             listaParam = nodo.elementosEliminados[0].nodo
             if listaParam.regla == "ListaParam" and len(listaParam.elementosEliminados) > 0:
@@ -285,6 +418,17 @@ class Semantico:
 
             error = f"ERROR: parametro '{segParametro.identificador}' definido dos veces"
             self.listaErrores.append(error)
+
+    '''Metodo para agregar los argumentos al archivo ASM'''
+    def agregaArgumentos(self,nodo,archivo):
+
+        arg = nodo.nodo.elementosEliminados[1].nodo.elementosEliminados[0].nodo.elementosEliminados[0].valor
+        archivo.write(f"mov eax, {arg}\n")
+        archivo.write("push eax\n")
+
+        if len(nodo.nodo.elementosEliminados[0].nodo.elementosEliminados)>0:
+
+            self.agregaArgumentos(nodo.nodo.elementosEliminados[0].nodo.elementosEliminados,archivo)
 
     def aumentaNumParametros(self,nombre,ambito):
 
