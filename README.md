@@ -1,3 +1,8 @@
+<h1> Proyecto de Seminario de Traductores de Lenguajes 2 </h1>
+<h2> Autor: Bustos Ruiz Daniel </h2>
+<h2> Seccion: D02 </h2>
+<h2> Codigo: 215466901 </h2>
+
 <h3> Etapa #1: Analizador Lexico </h3>
 En esta etapa la practica consiste en hacer que el programa reconozca los tokens que recibe por entrada, esto con el fin de determinar que tipo de token es el que se recibe y si es que existe.
 A continuacion se muestran los tokens que debe reconocer el compilador:
